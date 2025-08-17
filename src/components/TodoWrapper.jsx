@@ -8,7 +8,22 @@ const TodoWrapper = () => {
 
   const addTodo = (newTodo) => {
     if (!newTodo || !newTodo.trim()) return;
-    setTodos((prev) => [...prev, newTodo.trim()]);
+    const todoObj = {
+      id: Date.now(),
+      text: newTodo.trim(),
+      isCompleted: false,
+    };
+    setTodos((prev) => [...prev, todoObj]);
+  };
+
+  const deleteTodo = (id) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  };
+
+  const editTodo = (id, newText) => {
+    const text = (newText || "").trim();
+    if (!text) return;
+    setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, text } : t)));
   };
 
   return (
@@ -24,8 +39,14 @@ const TodoWrapper = () => {
 
       {/* input todo */}
       <div className="flex flex-col gap-[10px] mt-[40px]">
-        {todos.map((todo, i) => (
-          <TodoItem addTodo={addTodo} key={i} todo={todo} />
+        {todos.map((todo) => (
+          <TodoItem
+            addTodo={addTodo}
+            key={todo.id}
+            todo={todo}
+            deleteTodo={deleteTodo}
+            editTodo={editTodo}
+          />
         ))}
       </div>
     </div>
